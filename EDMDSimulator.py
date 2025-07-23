@@ -18,10 +18,13 @@ class EDMDSimulator:
         self.random_seed = random_seed
         np.random.seed(self.random_seed)
 
-    def generate_training_data(self, xrange=(-2, 2), yrange=(-2, 2), grid_points=100):
+    def generate_training_data(self, xrange=(-1,1), yrange=(-1,1), grid_points=100):
         """
         Generate training data using meshgrid over given (xrange, yrange),
         then apply one-step Duffing integration to form (X, Y) data for EDMD.
+        xrange= (xmin, xmax)
+        yrange=(ymin, ymax)
+        grid_points=100 : 100*100 격자
         """
         # 1. 격자 생성
         x1 = np.linspace(xrange[0], xrange[1], grid_points)
@@ -78,13 +81,6 @@ class EDMDSimulator:
         self.Xk = x.T
         self.Yk = yT
 
-    def print_single_trajectory_errors(self):
-        """
-        Print the Koopman model prediction error (mean and max L2 norms).
-        """
-        print(f"✅ Koopman Prediction Mean L2 Error: {self.mean_error:.6f}")
-        print(f"🚨 Max L2 Error over trajectory:     {self.max_error:.6f}")
-
     def plot_results(self, x0):
         # Time-series plot
         fig, axs = plt.subplots(2, 1, sharex=True, tight_layout=True, figsize=(10, 4))
@@ -119,11 +115,32 @@ class EDMDSimulator:
         cyan_patch = mpatches.Patch(color='cyan', label='Koopman prediction on test')
         ax.legend(handles=[red_patch, black_patch, blue_patch, cyan_patch], loc='best')
         plt.show()
+    
+    def print_single_trajectory_errors(self):
+        """
+        Print the Koopman model prediction error (mean and max L2 norms).
+        """
+        print(f"Koopman Prediction Mean L2 Error over single trajectory: {self.mean_error:.6f}")
+        print(f"Koopman Prediction Max L2 Error over single trajectory:  {self.max_error:.6f}")
 
-    def plot_phase_portrait(self, x0, xlim=[-2.5, 2.5], ylim=[-2.5, 2.5], grid_points=30):
+    def plot_domain_rx(self, xlim=(-2.5, 2.5), ylim=(-2.5, 2.5)):
+        """
+        xy평면의 빨간 사각형은 학습 범위
+        xlim = (-2.5,2.5) 그래프 시각화 범위
+        ylim = (-2.5,2.5) 그래프 시각화 범위
+        """
+        # xy평면에 따라 z축에는 1step 예측 오차
+        
+        print(f"Koopman Prediction Mean L2 Error over whole domain: {self.mean_error:.6f}")
+        print(f"Koopman Prediction Max L2 Error over whole domain:  {self.max_error:.6f}")
+        
+    def plot_phase_portrait(self, x0, xlim=(-2.5, 2.5), ylim=(-2.5, 2.5), grid_points=30):
         """
         Draw Duffing oscillator phase portrait and overlay Koopman prediction vs true trajectory.
         Adds red rectangle showing training domain if available.
+        xlim = (-2.5,2.5) 그래프 시각화 범위
+        ylim = (-2.5,2.5) 그래프 시각화 범위
+        grid_points = 30 : 벡터 시각화 해상도 (의미없음)
         """
         # 1. Mesh grid for vector field
         x1 = np.linspace(xlim[0], xlim[1], grid_points)
