@@ -89,13 +89,13 @@ def main():
     observable = RFF
     )
 
-    x0 = np.array([-0.5, -0.8])
+    x0 = np.array([0.3, -0.5])
 
-    sim.generate_training_data(xrange=(-2, 2), yrange=(-2, 2), grid_points=100)
+    sim.generate_training_data(xrange=(-0.5, 0.5), yrange=(-0.5, 0.5), grid_points=100)
     sim.fit_model()
-    sim.evaluate_model(x0, step = 100)
+    sim.evaluate_model(x0, step = 200)
     sim.print_single_trajectory_errors()
-    sim.plot_phase_portrait(x0, xlim=(-2.5, 2.5), ylim=(-2.5, 2.5), grid_points=30)
+    sim.plot_phase_portrait(x0, xlim=(-1, 1), ylim=(-1, 1), grid_points=30)
 
 if __name__ == "__main__":
     main()
